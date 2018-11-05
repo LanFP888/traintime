@@ -1,0 +1,114 @@
+<html>
+
+<head>
+	<title>JavaScript/CSS3 Departure Board</title>
+	<link rel="stylesheet" href="./css/departure-board.css" />
+</head>
+
+<body>
+	<div class="trainSchedule">
+		<!-- <div id="testTime" class="departure-board">11:11</div>
+		<div id="testDesination" class="departure-board">TestLocation</div> -->
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+	 crossorigin="anonymous"></script>
+	<script src="./js/departure-board.js"></script>
+	<script>
+		var test = [
+			// {
+			// 	trainName: "Train Name",
+			// 	destination: "Destination",
+			// 	frequency: "Frequency (min)",
+			// 	time: "Next Arrival",
+			// 	minutesAway: "Minutes Away",
+
+			// },
+			{
+				trainName: "Trenton Express",
+				destination: "London",
+				frequency: "25",
+				time: "12:38",
+				minutesAway: "10",
+
+			},
+			{
+				trainName: "Oregon Trail",
+				destination: "Mississippi",
+				frequency: "25",
+				time: "12:38",
+				minutesAway: "10",
+
+			},
+			{
+				trainName: "Midnight Carriage",
+				destination: "Philadelphia",
+				frequency: "25",
+				time: "12:00",
+				minutesAway: "10",
+
+			},
+			{
+				trainName: "Sing Sing Caravan",
+				destination: "Atlanta",
+				frequency: "25",
+				time: "12:38",
+				minutesAway: "10",
+
+			},
+			{
+				trainName: "California Caravan",
+				destination: "San Francisco",
+				frequency: "25",
+				time: "12:38",
+				minutesAway: "10",
+
+			},
+		]
+
+		// var boardTime = new DepartureBoard(document.getElementById('testTime'), { rowCount: 1, letterCount: 5 });
+		// var boardDestination = new DepartureBoard(document.getElementById('testDesination'), { rowCount: 1, letterCount: 25 });
+
+		const maxCharTime = 5
+		const maxCharMin = 3
+		const maxCharText = 20
+
+		// window.setTimeout(function () {
+		for (i = 0; i < test.length; i++) {
+			createNewRow()
+			var timeBoard = new DepartureBoard(document.getElementById('time'), { rowCount: 1, letterCount: maxCharTime + 1 });
+			var trainNameBoard = new DepartureBoard(document.getElementById('trainName'), { rowCount: 1, letterCount: maxCharText + 1 });
+			var frequencyBoard = new DepartureBoard(document.getElementById('frequency'), { rowCount: 1, letterCount: maxCharMin + 1 });
+			var minAwayBoard = new DepartureBoard(document.getElementById('minAway'), { rowCount: 1, letterCount: maxCharMin + 1 });
+			var destinationBoard = new DepartureBoard(document.getElementById('destination'), { rowCount: 1, letterCount: maxCharText + 1 });
+			timeBoard.setValue(test[i].time);
+			destinationBoard.setValue(test[i].destination)
+			trainNameBoard.setValue(test[i].trainName)
+			frequencyBoard.setValue(test[i].frequency)
+			minAwayBoard.setValue(test[i].minutesAway)
+		}
+
+		function createNewRow() {
+			var trainNameDiv = $("<div>", {
+				id: "trainName",
+			})
+			var destinationDiv = $("<div>", {
+				id: "destination"
+			})
+			var frequency = $("<div>", {
+				id: "frequency"
+			})
+			var timeDiv = $("<div>", {
+				id: "time"
+			})
+			var minAway = $("<div>", {
+				id: "minAway"
+			})
+
+			$(".trainSchedule").append(trainNameDiv, destinationDiv, frequency, timeDiv, minAway)
+		}
+
+	</script>
+</body>
+
+</html>
