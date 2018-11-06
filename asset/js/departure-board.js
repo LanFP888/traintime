@@ -1,29 +1,29 @@
-var DepartureBoard = function(element, options) {
-  options = options || {};
+var DepartureBoard = function (letterCount) {
+  // options = options || {};
 
-  this._element = element;
+  // this._element = element;
   this._letters = [];
 
-  element.className += " departure-board";
+  //element.className += " departure-board";
 
-  var rowCount = options.rowCount || 1,
-    letterCount = options.letterCount || 25,
-    letter,
-    rowElement;
+  // var rowCount = options.rowCount || 1,
+  var letterCount = letterCount || 25,
+  //   letter,
+  //   rowElement;
 
-  for (var r = 0; r < rowCount; r++) {
-    this._letters.push([]);
+  // for (var r = 0; r < rowCount; r++) {
+  this._letters.push([]);
 
-    rowElement = document.createElement("div");
-    rowElement.className = "row";
-    element.appendChild(rowElement);
+  rowElement = document.createElement("td");
+  rowElement.className = "rowElement departure-board";
+  $("#scheduleTable").append(rowElement);
 
-    for (var l = 0; l < letterCount; l++) {
-      letter = new DepartureBoard.Letter();
-      this._letters[r].push(letter);
-      rowElement.appendChild(letter.getElement());
-    }
+  for (var l = 0; l < letterCount; l++) {
+    letter = new DepartureBoard.Letter();
+    this._letters[0].push(letter);
+    rowElement.appendChild(letter.getElement());
   }
+  // }
 };
 
 // DepartureBoard.LETTERS = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,':()&!?+-";
@@ -31,19 +31,19 @@ var DepartureBoard = function(element, options) {
 //getting rid of some unnecessary characters, the original characters are above:
 DepartureBoard.LETTERS = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.':()";
 
-DepartureBoard.prototype.spin = function() {
+DepartureBoard.prototype.spin = function () {
   var me = this;
 
   for (var i = 0, l = this._letters.length; i < l; i++) {
-    (function(i) {
-      window.setTimeout(function() {
+    (function (i) {
+      window.setTimeout(function () {
         me._letters[i].spin();
       }, 20 * i + Math.random() * 400);
     })(i);
   }
 };
 
-DepartureBoard.prototype.setValue = function(value) {
+DepartureBoard.prototype.setValue = function (value) {
   if (!(value instanceof Array)) value = [value];
   var me = this;
 
@@ -51,8 +51,8 @@ DepartureBoard.prototype.setValue = function(value) {
     value[r] = value[r] ? value[r].toUpperCase() : "";
 
     for (var i = 0, l = this._letters[r].length; i < l; i++) {
-      (function(r, i) {
-        window.setTimeout(function() {
+      (function (r, i) {
+        window.setTimeout(function () {
           var letterValue = value[r].substr(i, 1) || "";
           me._letters[r][i].setValue(letterValue);
         }, 2000 * r + 25 * i + Math.random() * 400);
@@ -61,7 +61,7 @@ DepartureBoard.prototype.setValue = function(value) {
   }
 };
 
-DepartureBoard.Letter = function() {
+DepartureBoard.Letter = function () {
   this._element = document.createElement("span");
   this._element.className = "letter";
 
@@ -104,25 +104,25 @@ DepartureBoard.Letter = function() {
 
 DepartureBoard.Letter.DROP_TIME = 100;
 
-DepartureBoard.Letter.prototype.getElement = function() {
+DepartureBoard.Letter.prototype.getElement = function () {
   return this._element;
 };
 
-DepartureBoard.Letter.prototype.spin = function(clear) {
+DepartureBoard.Letter.prototype.spin = function (clear) {
   if (clear !== false) this._stopAt = null;
 
   var me = this;
-  this._interval = window.setInterval(function() {
+  this._interval = window.setInterval(function () {
     me._tick();
-  }, DepartureBoard.Letter.DROP_TIME * 1.1);
+  }, DepartureBoard.Letter.DROP_TIME * 0.1);
 };
 
-DepartureBoard.Letter.prototype.setValue = function(value) {
+DepartureBoard.Letter.prototype.setValue = function (value) {
   this._stopAt = DepartureBoard.LETTERS.indexOf(value);
 
-  // If not at the correct letter, Draw only 6 flips.
+  // If not at the correct letter, Draw only 2 flips.
   if (this._index != this._stopAt) {
-    this._index = this._stopAt - 6;
+    this._index = this._stopAt - 2;
     if (this._index < 0) {
       this._index = DepartureBoard.LETTERS.length - 4;
     }
@@ -132,7 +132,7 @@ DepartureBoard.Letter.prototype.setValue = function(value) {
   if (!this._interval && this._index != this._stopAt) this.spin(false);
 };
 
-DepartureBoard.Letter.prototype._tick = function() {
+DepartureBoard.Letter.prototype._tick = function () {
   var me = this,
     oldValue = DepartureBoard.LETTERS.charAt(this._index),
     fallingStyle = this._falling.style,
@@ -147,14 +147,14 @@ DepartureBoard.Letter.prototype._tick = function() {
 
   this._topText.innerHTML = newValue;
 
-  window.setTimeout(function() {
+  window.setTimeout(function () {
     fallingTextStyle.WebkitTransitionTimingFunction = fallingTextStyle.MozTransitionTimingFunction = fallingTextStyle.OTransitionTimingFunction = fallingTextStyle.transitionTimingFunction =
       "ease-in";
     fallingTextStyle.WebkitTransform = fallingTextStyle.MozTransform = fallingTextStyle.OTransform = fallingTextStyle.transform =
       "scaleY(0)";
   }, 1);
 
-  window.setTimeout(function() {
+  window.setTimeout(function () {
     me._fallingText.innerHTML = newValue;
 
     fallingStyle.top = "-.03em";
@@ -167,7 +167,7 @@ DepartureBoard.Letter.prototype._tick = function() {
       "scaleY(1)";
   }, DepartureBoard.Letter.DROP_TIME / 2);
 
-  window.setTimeout(function() {
+  window.setTimeout(function () {
     me._bottomText.innerHTML = newValue;
     fallingStyle.display = "none";
 
