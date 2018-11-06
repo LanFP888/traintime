@@ -5,11 +5,11 @@ const maxCharDest = 18
 
 var test = [
     {
-        trainName: "Train Name",
-        destination: "Destination",
-        frequency: "Frequency",
-        time: "Arrival Time",
-        minutesAway: "Next Train (min)",
+        // trainName: "Train Name",
+        // destination: "Destination",
+        // frequency: "Frequency",
+        // time: "Arrival Time",
+        // minutesAway: "Next Train (min)",
 
     },
     {

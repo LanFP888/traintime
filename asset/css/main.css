@@ -1,4 +1,7 @@
-body {
-    background-color: #333
+.table {
+    background-color: #111
 }
 
+.scheduleTableHeader{
+    color: white;
+}
