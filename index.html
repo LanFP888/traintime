@@ -8,6 +8,7 @@
 	<link rel="stylesheet" href="asset/css/departure-board.css" />
 	<script defer src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
 	 crossorigin="anonymous"></script>
+	<script defer src="https://www.gstatic.com/firebasejs/5.5.7/firebase.js"></script>
 	<!-- <script defer src="asset/js/departure-board.js"></script> -->
 	<script defer src="asset/js/jquery.splitflap.js"></script>
 	<script defer src="asset/js/main.js"></script>
@@ -32,71 +33,35 @@
 						</tr>
 					</thead>
 					<tbody id="scheduleTableBody">
-
-						<!-- <tr>
-							<td class="test">testestetestestes</td>
-							<td id="test2">testset2</td>
-							<td id="test3">testset3</td>
-							<td id="test4">testset4</td>
-							<td id="test5">testset5</td>
-
-						</tr>
-						<tr>
-							<td class="test">HelloWorld</td>
-							<td id="test7">testset2</td>
-							<td id="test8">testset3</td>
-							<td id="test9">testset4</td>
-							<td id="test10">testset5</td>
-
-						</tr> -->
+						<!-- populated by js -->
 					</tbody>
 				</table>
-				<!-- <div class="row text-center">
-					<h2 class="col-2">Train Name</h2>
-					<h2 class="col-2">Destination</h2>
-					<h2 class="col-2">Frequency</h2>
-					<h2 class="col-2">Arrival Time</h2>
-					<h2 class="col-2">Next Train (Min)</h2>
-				</div> -->
-				<!-- populated by js -->
 			</div>
 		</div>
 
 		<div class="row formSection">
 			<form class="col-12">
 				<div class="form-group">
-					<label for="questionQuantity">Number of Questions:</label>
-					<input type="number" class="form-control" name="quantity" min="1" max="50" required pattern="[0-9]" value="10" id="questionQuantity">
+					<label for="trainNameInput">Train Name</label>
+					<input type="text" class="form-control" id="trainNameInput">
 				</div>
 				<div class="form-group">
-					<label for="questionCategory">Question Category:</label>
-					<select class="form-control" id="questionCategory">
-						<option value="any">Any Category</option>
-						<!-- added by game.js -->
-					</select>
+					<label for="destinationInput">Destination</label>
+					<input type="text" class="form-control" id="destinationInput">
 				</div>
 				<div class="form-group">
-					<label for="questionDifficulty">Question Difficulty:</label>
-					<select class="form-control" id="questionDifficulty">
-						<option value="any">Any Difficulty</option>
-						<option value="easy">Easy</option>
-						<option value="medium">Medium</option>
-						<option value="hard">Hard</option>
-					</select>
+					<label for="trainStartTimeInput">First Train Time</label>
+					<input type="text" class="form-control" id="trainStartTimeInput" placeholder="hh:mm">
 				</div>
 				<div class="form-group">
-					<label for="questionType">Question Type:</label>
-					<select class="form-control" id="questionType">
-						<option value="any">Any Type</option>
-						<option value="multiple">Multiple Choice</option>
-						<option value="boolean">True or False</option>
-					</select>
+					<label for="frequencyInput">Frequency (min)</label>
+					<input type="text" class="form-control" id="frequencyInput" placeholder="10">
 				</div>
 			</form>
 		</div>
 		<div class="row text-center">
-			<div class="col-12 modalButton">
-				<button type="button" class="btn btn-success getData">Start Game</button>
+			<div class="col-12">
+				<button type="submit" class="btn btn-success submitSchedule">Submit</button>
 			</div>
 		</div>
 	</div>

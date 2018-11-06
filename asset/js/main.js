@@ -1,126 +1,79 @@
-const maxCharTime = 5
-const maxCharMin = 4
-const maxCharTrainName = 25
-const maxCharDest = 18
+const ratio = 0.3;
 
-var test = [
-    {
-        // trainName: "Train Name",
-        // destination: "Destination",
-        // frequency: "Frequency",
-        // time: "Arrival Time",
-        // minutesAway: "Next Train (min)",
+//initialize firebase
+var config = {
+  authDomain: "traintime-a592f.firebaseapp.com",
+  databaseURL: "https://traintime-a592f.firebaseio.com",
+  projectId: "traintime-a592f",
+  storageBucket: "",
+  messagingSenderId: "294403762944"
+};
+firebase.initializeApp(config);
 
-    },
-    {
-        trainName: "Trenton Express",
-        destination: "London",
-        frequency: "25",
-        time: "12:38",
-        minutesAway: "10",
+const db = firebase.database();
+const trainRef = db.ref("/train");
 
-    },
-    {
-        trainName: "Oregon Trail",
-        destination: "Mississippi",
-        frequency: "25",
-        time: "12:38",
-        minutesAway: "10",
+//add the data to the page when new element is added to firebase
+trainRef.on("child_added", function(snapshot) {
+  let train = snapshot.val();
+  console.log(train);
+  //create the elements (have to be this way because firebase automatically orders the object keys alphabetically)
+  let tableRow = $("<tr>", {
+    class: "scheduleTable"
+  });
+  let trainName = $("<td>", {
+    html: train.trainName,
+    value: train.trainName
+  });
+  let destination = $("<td>", {
+    html: train.destination,
+    value: train.destination
+  });
+  let frequency = $("<td>", {
+    html: train.frequency,
+    value: train.frequency
+  });
+  let nextArrival = $("<td>", {
+    html: train.nextArrival,
+    value: train.nextArrival
+  });
+  let minsAway = $("<td>", {
+    html: train.minsAway,
+    value: train.minsAway
+  });
+  //style the letters
+  styleSchedule(trainName);
+  styleSchedule(destination);
+  styleSchedule(frequency);
+  styleSchedule(nextArrival);
+  styleSchedule(minsAway);
+  $("#scheduleTableBody").append(
+    tableRow.append(trainName, destination, frequency, nextArrival, minsAway)
+  );
+});
 
-    },
-    {
-        trainName: "Midnight Carriage",
-        destination: "Philadelphia",
-        frequency: "25",
-        time: "12:00",
-        minutesAway: "10",
+//handles the submit button click event and send to database
+$(".submitSchedule").on("click", function(event) {
+  event.preventDefault();
+  //get the information from the text boxes and store them in an object
+  const train = {
+    trainName: $("#trainNameInput").val(),
+    destination: $("#destinationInput").val(),
+    frequency: $("#frequencyInput").val(),
+    nextArrival: "5:40",
+    minsAway: "5"
+  };
 
-    },
-    {
-        trainName: "Sing Sing Caravan",
-        destination: "Atlanta",
-        frequency: "25",
-        time: "12:38",
-        minutesAway: "10",
+  trainRef.push(train);
+});
 
-    },
-    {
-        trainName: "California Caravan",
-        destination: "San Francisco",
-        frequency: "25",
-        time: "12:38",
-        minutesAway: "10",
-
-    },
-]
-var ratio = 0.3;
-$(document).ready(function () {
-    $(".test").splitFlap({
-        charWidth: 50 * ratio,
-        charHeight: 100 * ratio,
-        imageSize: (2500 * ratio) + 'px ' + (100 * ratio) + 'px'
-    })
-})
-
-for (i = 0; i < test.length; i++) {
-    // createNewRow()
-    var tableRow = $('<tr>', {
-        class: "scheduleTable",
-    })
-
-    $.each(test[i], function (k, v) {
-        var trainInstance = $("<td>", {
-            class: "test",
-            html: v
-        })
-        $("#scheduleTableBody").append(tableRow.append(trainInstance))
-    });
-
-    // var timeBoard = $("<td>", {
-    //     class: "test",
-    //     html: test[i].time
-    // })
-    // var timeBoard = $("<td>", {
-    //     class: "test",
-    //     html: test[i].time
-    // })
-    // var timeBoard = $("<td>", {
-    //     class: "test",
-    //     html: test[i].time
-    // })
-    // var timeBoard = $("<td>", {
-    //     class: "test",
-    //     html: test[i].time
-    // })
-
-
-
+function styleSchedule(element) {
+  element.splitFlap({
+    charWidth: 50 * ratio,
+    charHeight: 100 * ratio,
+    imageSize: 2500 * ratio + "px " + 100 * ratio + "px"
+  });
 }
 
-
-// function createNewRow() {
-//     var tableRow = $('<tr>')
-//     var trainNameDiv = $("<td>", {
-//         id: "trainName",
-//         class: "departure-board",
-//     })
-//     var destinationDiv = $("<td>", {
-//         id: "destination",
-//         class: "departure-board",
-//     })
-//     var frequency = $("<td>", {
-//         id: "frequency",
-//         class: "departure-board",
-//     })
-//     var timeDiv = $("<td>", {
-//         id: "time",
-//         class: "departure-board",
-//     })
-//     var minAway = $("<td>", {
-//         id: "minAway",
-//         class: "departure-board",
-//     })
-    // $(".trainSchedule").append(timeDiv)
-    // $("#tableHeader").append(trainNameDiv)
-    // $(".scheduleTable").append(tableRow.append(trainNameDiv, destinationDiv, frequency, timeDiv, minAway))
-// }
+//import moment.js to calculate time and difference in minutes
+//update the minsAway every minute
