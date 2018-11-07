@@ -13,6 +13,10 @@ firebase.initializeApp(config);
 const db = firebase.database();
 const trainRef = db.ref("/train");
 
+$(document).ready(function() {
+  setInterval(updateTime, 60 * 1000);
+});
+
 //add the data to the page when new element is added to firebase
 trainRef.on("child_added", function(snapshot) {
   let train = snapshot.val();
@@ -30,16 +34,23 @@ trainRef.on("child_added", function(snapshot) {
     value: train.destination
   });
   let frequency = $("<td>", {
+    class: "frequency",
     html: train.frequency,
     value: train.frequency
   });
   let nextArrival = $("<td>", {
-    html: train.nextArrival,
-    value: train.nextArrival
+    class: "nextArrival",
+    html: calculateNextArrival(
+      calculateMinsAway(train.trainStartTime, train.frequency)
+    ),
+    value: calculateNextArrival(
+      calculateMinsAway(train.trainStartTime, train.frequency)
+    )
   });
   let minsAway = $("<td>", {
-    html: train.minsAway,
-    value: train.minsAway
+    class: "minsAway",
+    html: calculateMinsAway(train.trainStartTime, train.frequency),
+    value: calculateMinsAway(train.trainStartTime, train.frequency)
   });
   //style the letters
   styleSchedule(trainName);
@@ -60,8 +71,17 @@ $(".submitSchedule").on("click", function(event) {
     trainName: $("#trainNameInput").val(),
     destination: $("#destinationInput").val(),
     frequency: $("#frequencyInput").val(),
-    nextArrival: "5:40",
-    minsAway: "5"
+    nextArrival: calculateNextArrival(
+      calculateMinsAway(
+        $("#trainStartTimeInput").val(),
+        $("#frequencyInput").val()
+      )
+    ),
+    minsAway: calculateMinsAway(
+      $("#trainStartTimeInput").val(),
+      $("#frequencyInput").val()
+    ),
+    trainStartTime: $("#trainStartTimeInput").val()
   };
 
   trainRef.push(train);
@@ -75,5 +95,63 @@ function styleSchedule(element) {
   });
 }
 
-//import moment.js to calculate time and difference in minutes
-//update the minsAway every minute
+function calculateMinsAway(startTime, frequency) {
+  let minsAway =
+    frequency -
+    (moment().diff(moment(startTime, "HH:mm"), "minutes") % frequency);
+  return minsAway;
+}
+
+function calculateNextArrival(minsAway) {
+  return moment(moment().add(minsAway, "minutes")).format("HH:mm");
+}
+
+//updates the min and Time Arrival (every minute)
+function updateTime() {
+  $(".scheduleTable").each(function() {
+    //reduce the min until next arrival by 1
+    let min = $(this)
+      .find(".minsAway")
+      .attr("value");
+    min--;
+
+    let next = $(this)
+      .find(".nextArrival")
+      .attr("value");
+
+    let freq = $(this)
+      .find(".frequency")
+      .attr("value");
+
+    // update the nextArrival time if min reaches 0
+    if (min === 0) {
+      let newTime = moment(moment(next, "HH:mm").add("minutes", freq)).format(
+        "HH:mm"
+      );
+      console.log(newTime);
+      $(this)
+        .find(".nextArrival")
+        .attr("value", newTime.toString());
+
+      $(this)
+        .find(".nextArrival")
+        .html(newTime.toString());
+      styleSchedule($(this).find(".nextArrival"));
+    }
+
+    //refresh the minute by the interval
+    if (min < 0) {
+      min = freq;
+    }
+
+    $(this)
+      .find(".minsAway")
+      .attr("value", min);
+
+    $(this)
+      .find(".minsAway")
+      .html(min);
+  });
+
+  styleSchedule($(".minsAway"));
+}
